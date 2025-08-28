@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulating a Double-Spending Attack in Blockchain</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            color: #ecf0f1; /* Lighter text for contrast with dark background */
+            min-height: 100vh; /* Ensure background covers full height */
+            display: flex;
+            flex-direction: column;
+            
+            /* Background image with gradient overlay */
+            background: 
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), /* Darker overlay for better text readability */
+                url("https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #27ae60, #2ecc71); /* Slightly adjusted gradient */
+            padding: 15px 35px; /* More horizontal padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Stronger shadow */
+            border-bottom: 3px solid #1a7a42; /* A subtle bottom border */
+        }
+        .navbar-title {
+            font-size: 22px; /* Larger title */
+            font-weight: 700; /* Bolder */
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* Text shadow for depth */
+        }
+        .navbar-links {
+            display: flex;
+            gap: 25px; /* Increased gap */
+        }
+        .navbar a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 5px; /* Space for underline effect */
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #ffea00; /* Yellow underline */
+            transition: width 0.3s ease;
+        }
+        .navbar a:hover {
+            color: #ffea00;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px; /* Slightly wider container */
+            margin: 40px auto; /* More vertical margin */
+            background: rgba(255, 255, 255, 0.95); /* Less transparent white */
+            padding: 35px 40px; /* More padding */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25); /* Deeper shadow */
+            flex-grow: 1; /* Allow container to grow and fill space */
+            color: #333; /* Darker text inside container */
+        }
+
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600; /* Slightly less bold, more modern */
+            border-bottom: 1px solid #eee; /* Subtle underline for headings */
+            padding-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.7; /* Increased line height for readability */
+            margin-bottom: 18px;
+        }
+
+        ul {
+            margin-left: 25px; /* More indentation */
+            line-height: 1.7;
+            list-style-type: square; /* A different list style */
+            color: #555;
+        }
+        ul li {
+            margin-bottom: 8px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: separate; /* Use separate for border-radius on cells */
+            border-spacing: 0;
+            margin: 25px 0; /* More margin */
+            font-size: 15px;
+            border-radius: 10px; /* Rounded table corners */
+            overflow: hidden; /* Ensures rounded corners are visible */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        th, td {
+            border: none; /* Remove individual cell borders */
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee; /* Light bottom border for rows */
+        }
+        th {
+            background: linear-gradient(90deg, #27ae60, #2ecc71); /* Gradient for table header */
+            color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        th:first-child { border-top-left-radius: 10px; }
+        th:last-child { border-top-right-radius: 10px; }
+
+        tr:nth-child(even) {
+            background: #f7fcf9; /* Lighter even rows */
+        }
+        tr:hover {
+            background: #e6ffe9; /* Highlight row on hover */
+            cursor: pointer;
+        }
+        
+        /* Forms */
+        form {
+            margin: 25px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fdfdfd;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        label {
+            display: block; /* Make labels block for better alignment */
+            margin-bottom: 8px; /* Space between label and input */
+            font-weight: 600;
+            color: #2c3e50;
+            width: auto; /* Remove fixed width */
+        }
+        input[type="number"], select, input[type="text"] {
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            width: calc(100% - 24px); /* Full width minus padding */
+            max-width: 300px; /* Max width for inputs */
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="number"]:focus, select:focus, input[type="text"]:focus {
+            border-color: #8e44ad;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+        }
+        input[type="submit"] {
+            padding: 10px 22px;
+            background: linear-gradient(90deg, #8e44ad, #9b59b6); /* Gradient for button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        input[type="submit"]:hover {
+            background: linear-gradient(90deg, #9b59b6, #8e44ad); /* Reverse gradient on hover */
+            transform: translateY(-2px); /* Slight lift */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Code blocks (for coding vibe) */
+        .code-block {
+            background: #282c34; /* Darker background for code */
+            color: #abb2bf; /* Lighter, more readable code text color */
+            font-family: 'Fira Code', monospace; /* A common coding font */
+            padding: 15px; /* More padding */
+            border-radius: 8px; /* Slightly more rounded */
+            margin: 20px 0; /* More margin */
+            overflow-x: auto;
+            border: 1px solid #3a3f4a;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Flash messages */
+        .flash {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .flash.success {
+            background-color: #28a745;
+            border: 1px solid #218838;
+        }
+        .flash.error {
+            background-color: #dc3545;
+            border: 1px solid #c82333;
+        }
+        .flash.info {
+            background-color: #007bff;
+            border: 1px solid #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-title">Simulating a Double-Spending Attack in Blockchain</div>
+        <div class="navbar-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('blockchain') }}">Blockchain</a>
+            <a href="{{ url_for('attack') }}">Attack</a>
+            <a href="{{ url_for('transactions') }}">Transactions</a>
+        </div>
+    </div>
+
+    <!-- Main container -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

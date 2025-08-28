@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Project Overview</h1>
+
+<h2>Abstract / Introduction</h2>
+<p>
+Blockchain technology has revolutionized digital transactions by providing a decentralized and immutable ledger system. 
+However, despite its robustness, blockchain networks are vulnerable to various types of attacks, including the 
+<strong>double-spending attack</strong>.
+</p>
+<p>
+A double-spending attack occurs when a malicious actor spends the same cryptocurrency more than once before the network confirms the transaction, potentially leading to financial losses.
+</p>
+<p>
+This project simulates a double-spending attack on a blockchain system using Python. It aims to enhance understanding of blockchain security and potential mitigation strategies by demonstrating how an attacker can exploit vulnerabilities in a blockchain. 
+Through this simulation, students can analyze attack scenarios, measure their success rates, and explore countermeasures that can strengthen blockchain networks.
+</p>
+
+<h2>Functional Requirements (Prototype Phase)</h2>
+<ol>
+    <li>
+        <strong>Blockchain Implementation:</strong>
+        <ul>
+            <li>Develop a basic blockchain system in Python.</li>
+            <li>Implement fundamental features such as blocks, transactions, and proof-of-work (PoW) consensus.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Transaction Processing:</strong>
+        <ul>
+            <li>Implement a transaction validation system.</li>
+            <li>Ensure transactions are broadcast and verified by network nodes.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Network Simulation:</strong>
+        <ul>
+            <li>Create a peer-to-peer (P2P) network to simulate blockchain nodes.</li>
+            <li>Implement a communication protocol for transaction propagation.</li>
+            <li>Use the Simblock simulator for simulation.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Double-Spending Attack Simulation:</strong>
+        <ul>
+            <li>Develop an attacker node capable of executing a double-spending attack.</li>
+            <li>Test attack success rates under different conditions (e.g., network delay, hash rate dominance).</li>
+        </ul>
+    </li>
+</ol>
+
+<h2>Network Nodes</h2>
+<table>
+    <tr>
+        <th>Node Name</th>
+        <th>Hash Rate</th>
+        <th>Balance</th>
+    </tr>
+    {% for node in nodes %}
+        <tr>
+            <td>{{ node.name }}</td>
+            <td>{{ node.hash_rate }}</td>
+            <td>{{ node.balance }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

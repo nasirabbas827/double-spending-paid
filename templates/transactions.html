@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Transactions</h1>
+<p>This simulates a double-spending attack where any nodes can make Transactions to each other.</p>
+
+
+<h2>Create Transaction</h2>
+<form action="{{ url_for('create_transaction') }}" method="post">
+    <p>
+        <label>From:</label>
+        <select name="sender" required>
+            <option value="">Select sender...</option>
+            {% for node in ['Node1', 'Node2', 'Node3'] %}
+                <option value="{{ node }}">{{ node }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        <label>To:</label>
+        <select name="recipient" required>
+            <option value="">Select recipient...</option>
+            {% for node in ['Node1', 'Node2', 'Node3'] %}
+                <option value="{{ node }}">{{ node }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        <label>Amount:</label>
+        <input type="number" name="amount" step="0.01" min="0.01" required>
+    </p>
+    <p><input type="submit" value="Send Transaction"></p>
+</form>
+
+<h2>Mine Block</h2>
+<form action="{{ url_for('mine_block') }}" method="post">
+    <p><input type="submit" value="Mine Block"></p>
+</form>
+{% endblock %}

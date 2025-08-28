@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Blockchain</h1>
+<h2>Chain</h2>
+{% for block in chain|reverse %}
+    <h3>Block #{{ block.index }} {% if block.index == 0 %}(Genesis){% endif %}</h3>
+    <p>Hash: {{ block.hash }}</p>
+    <p>Previous Hash: {{ block.previous_hash }}</p>
+    <p>Nonce: {{ block.nonce }}</p>
+    <p>Date: {{ block.date }}</p>
+    <h4>Transactions</h4>
+    {% if block.transactions %}
+        {% for tx in block.transactions %}
+            <p>{{ tx.sender }} -> {{ tx.recipient }}: {{ tx.amount }} ({{ tx.date }})</p>
+        {% endfor %}
+    {% else %}
+        <p>No transactions</p>
+    {% endif %}
+    <hr>
+{% endfor %}
+<h2>Pending Transactions</h2>
+{% if pending_transactions %}
+    {% for tx in pending_transactions %}
+        <p>{{ tx.sender }} -> {{ tx.recipient }}: {{ tx.amount }} ({{ tx.date }})</p>
+    {% endfor %}
+{% else %}
+    <p>No pending transactions</p>
+{% endif %}
+{% endblock %}

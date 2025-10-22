@@ -1,0 +1,39 @@
+Attack Timestamp,Public Tx ID,Public Sender,Public Receiver,Amount,Public Block Index,Public Previous Hash,Public Current Hash,Public Timestamp,Public Nonce,Public Transactions JSON,Private Tx ID,Private Sender,Private Receiver,Private Block Index,Private Previous Hash,Private Current Hash,Private Timestamp,Private Nonce,Private Transactions JSON,Hash Rate (%),Network Delay (s),Attack Result
+2025-10-22 13:25:57,4b9ea047,Node1,Node6,33.0,1,231708e39907c2aee52b7df88d65f939549063825e3238e4eb87bd0e910604f7,0008f3d3268975153ebaf1bb6a82828294e397d382bb64cdf0a7e16a8a6f8f4d,2025-10-22 13:25:57,7729,"[
+  {
+    ""transaction_id"": ""4b9ea047"",
+    ""sender"": ""Node1"",
+    ""recipient"": ""Node6"",
+    ""amount"": 33.0,
+    ""timestamp"": 1761121557.3191738,
+    ""date"": ""2025-10-22 13:25:57""
+  }
+]",9c4504d1,Node1,Node1,1,231708e39907c2aee52b7df88d65f939549063825e3238e4eb87bd0e910604f7,00028f22dfb50cc3cbc279274b3fffd9cc2e27cf20936c8b136da9cfd8973c45,2025-10-22 13:25:57,11256,"[
+  {
+    ""transaction_id"": ""9c4504d1"",
+    ""sender"": ""Node1"",
+    ""recipient"": ""Node1"",
+    ""amount"": 33.0,
+    ""timestamp"": 1761121557.3191738,
+    ""date"": ""2025-10-22 13:25:57""
+  }
+]",60.0,1.0,Success
+2025-10-22 13:26:34,8c1a3653,Node2,Node1,22.0,3,000223c448653a50090ed349e36cf58118d4c9a35c8461ea01c656f014e56928,0001fc6b2ec4e779b9747c9cfbc30359209a7362caaf7866126580b2f137cd02,2025-10-22 13:26:33,7023,"[
+  {
+    ""transaction_id"": ""8c1a3653"",
+    ""sender"": ""Node2"",
+    ""recipient"": ""Node1"",
+    ""amount"": 22.0,
+    ""timestamp"": 1761121593.5579972,
+    ""date"": ""2025-10-22 13:26:33""
+  }
+]",91cdd156,Node2,Node2,3,000223c448653a50090ed349e36cf58118d4c9a35c8461ea01c656f014e56928,000e6a1d8560587a188a7fca8cc85dbf391e046248e4c2711137334db8ebfa2d,2025-10-22 13:26:33,5483,"[
+  {
+    ""transaction_id"": ""91cdd156"",
+    ""sender"": ""Node2"",
+    ""recipient"": ""Node2"",
+    ""amount"": 22.0,
+    ""timestamp"": 1761121593.5579972,
+    ""date"": ""2025-10-22 13:26:33""
+  }
+]",20.0,1.0,Failed

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Data Visualization & Analytics</h1>
+
+<div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <h3>Summary Statistics</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 10px; font-weight: bold;">Total Attacks:</td>
+            <td style="padding: 10px;">{{ summary.total_attacks }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; font-weight: bold;">Successful Attacks:</td>
+            <td style="padding: 10px;">{{ summary.success_count }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; font-weight: bold;">Overall Success Rate:</td>
+            <td style="padding: 10px; color: {% if summary.success_rate > 50 %}green{% else %}red{% endif %};">
+                <strong>{{ summary.success_rate }}%</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; font-weight: bold;">Avg Hash Rate (Success):</td>
+            <td style="padding: 10px;">{{ summary.avg_hash_success }}%</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; font-weight: bold;">Avg Delay (Failed):</td>
+            <td style="padding: 10px;">{{ summary.avg_delay_failed }}s</td>
+        </tr>
+    </table>
+</div>
+
+<div style="text-align: center; margin: 20px 0;">
+    <a href="{{ url_for('download_csv') }}" class="btn btn-success" style="padding: 10px 20px; font-size: 1.1em;">
+        Download Full CSV Data
+    </a>
+</div>
+
+<h2>1. Success Rate by Hash Rate</h2>
+<img src="{{ url_for('serve_plots', filename=plots.success_vs_hashrate) }}" 
+     alt="Success vs Hash Rate" style="max-width: 100%; height: auto; margin: 20px 0; border: 1px solid #ddd;">
+
+<h2>2. Success Rate by Network Delay</h2>
+<img src="{{ url_for('serve_plots', filename=plots.success_vs_delay) }}" 
+     alt="Success vs Delay" style="max-width: 100%; height: auto; margin: 20px 0; border: 1px solid #ddd;">
+
+<h2>3. Attack Amount Distribution</h2>
+<img src="{{ url_for('serve_plots', filename=plots.amount_distribution) }}" 
+     alt="Amount Distribution" style="max-width: 100%; height: auto; margin: 20px 0; border: 1px solid #ddd;">
+
+<h2>4. Cumulative Attacks Over Time</h2>
+<img src="{{ url_for('serve_plots', filename=plots.cumulative_attacks) }}" 
+     alt="Cumulative Attacks" style="max-width: 100%; height: auto; margin: 20px 0; border: 1px solid #ddd;">
+
+<hr style="margin: 40px 0;">
+
+<p style="text-align: center; color: #666;">
+    <em>Charts auto-update after each attack. Run more attacks to see trends!</em>
+</p>
+
+<a href="{{ url_for('attack') }}" class="btn btn-primary">Back to Attack Simulator</a>
+{% endblock %}

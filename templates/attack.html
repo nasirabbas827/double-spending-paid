@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Double-Spending Attack</h1>
-<p>This simulates a double-spending attack where any node can attempt to spend the same coins twice.</p>
+<h1>Double-Spending Attack Simulation</h1>
+<p>Simulate a double-spending attack where the attacker creates two simultaneous transactions:</p>
+<ul>
+    <li><strong>Public Transaction:</strong> Sent to victim (broadcast to network)</li>
+    <li><strong>Private Transaction:</strong> Sent to attacker's own address (mined on secret chain)</li>
+</ul>
+<p>The attacker mines a private chain faster than the honest network, then broadcasts it to reverse the public transaction.</p>
 
 <form action="{{ url_for('attack') }}" method="post">
     <p>
-        <label>Attacker:</label>
+        <label>Attacker Node:</label>
         <select name="attacker" required>
             <option value="">Select attacker...</option>
             {% for node in nodes %}
@@ -14,7 +19,7 @@
         </select>
     </p>
     <p>
-        <label>Victim:</label>
+        <label>Victim Node:</label>
         <select name="victim" required>
             <option value="">Select victim...</option>
             {% for node in nodes %}
@@ -23,47 +28,71 @@
         </select>
     </p>
     <p>
-        <label>Attack Amount:</label>
+        <label>Attack Amount (coins):</label>
         <input type="number" name="amount" step="0.01" min="0.01" required>
     </p>
     <p>
         <label>Network Delay (seconds):</label>
-        <input type="number" name="network_delay" step="0.1" min="0" required>
+        <input type="number" name="network_delay" step="0.1" min="0" value="1.0" required>
+        <small>Time before honest nodes can respond</small>
     </p>
     <p>
-        <label>Hash Rate (%):</label>
-        <input type="number" name="hash_rate" step="1" min="1" max="100" required>
+        <label>Attacker Hash Rate (%):</label>
+        <input type="number" name="hash_rate" step="1" min="1" max="100" value="60" required>
+        <small>Needs >51% for high success rate</small>
     </p>
-    <p><input type="submit" value="Execute Attack"></p>
+    <p><input type="submit" value="Execute Double-Spending Attack"></p>
 </form>
 
 {% if event_records %}
-    <h2>Event Records</h2>
-    <table border="1">
-        <tr>
-            <th>Timestamp</th>
-            <th>Message</th>
-            <th>Status</th>
+    <h2>Attack Event Log</h2>
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+        <tr style="background-color: #f0f0f0;">
+            <th style="padding: 8px;">Timestamp</th>
+            <th style="padding: 8px;">Event</th>
+            <th style="padding: 8px;">Status</th>
         </tr>
         {% for entry in event_records %}
             <tr>
-                <td>{{ entry.timestamp }}</td>
-                <td>{{ entry.message }}</td>
-                <td>
-                    {% if 'successful' in entry.message|lower %}
-                        Success
-                    {% elif 'failed' in entry.message|lower %}
-                        Failed
+                <td style="padding: 8px;">{{ entry.timestamp }}</td>
+                <td style="padding: 8px;">{{ entry.message }}</td>
+                <td style="padding: 8px; text-align: center;">
+                    {% if '✅' in entry.message or 'SUCCESSFUL' in entry.message|upper %}
+                        <span style="color: green; font-weight: bold;">✅ Success</span>
+                    {% elif '❌' in entry.message or 'FAILED' in entry.message|upper %}
+                        <span style="color: red; font-weight: bold;">❌ Failed</span>
+                    {% elif '⛏️' in entry.message %}
+                        <span style="color: blue;">⛏️ Mining</span>
+                    {% elif '🔒' in entry.message %}
+                        <span style="color: purple;">🔒 Secret</span>
                     {% else %}
-                        -
+                        <span>-</span>
                     {% endif %}
                 </td>
             </tr>
         {% endfor %}
     </table>
+    
+    <h3>📝 Attack Details Saved</h3>
+    <p>Full attack details have been logged to <code>attack_logs.csv</code></p>
 {% endif %}
 
 {% if attack_in_progress %}
-    <p>Attack in progress...</p>
+    <p style="color: red; font-weight: bold;">⚠️ Attack in progress...</p>
 {% endif %}
+
+<h2>Understanding the Attack</h2>
+<div style="background-color: #f9f9f9; padding: 15px; margin-top: 20px; border-left: 4px solid #007bff;">
+    <h3>How it Works:</h3>
+    <ol>
+        <li><strong>Step 1:</strong> Attacker creates two transactions simultaneously with the same coins</li>
+        <li><strong>Step 2:</strong> Public transaction goes to victim (broadcast to network)</li>
+        <li><strong>Step 3:</strong> Private transaction goes to attacker (kept secret on private chain)</li>
+        <li><strong>Step 4:</strong> Honest nodes mine public transaction into a block</li>
+        <li><strong>Step 5:</strong> Attacker secretly mines private chain faster (needs >51% hash rate)</li>
+        <li><strong>Step 6:</strong> Attacker broadcasts longer private chain, network accepts it</li>
+        <li><strong>Result:</strong> Public transaction is reversed, attacker keeps coins!</li>
+    </ol>
+    <p><strong>Defense:</strong> Wait for multiple confirmations (6+ blocks) before accepting payment.</p>
+</div>
 {% endblock %}

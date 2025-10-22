@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Project Overview</h1>
+<h1>Blockchain Double-Spending Attack Simulator</h1>
 
 <h2>Abstract / Introduction</h2>
 <p>
@@ -9,59 +9,124 @@ However, despite its robustness, blockchain networks are vulnerable to various t
 <strong>double-spending attack</strong>.
 </p>
 <p>
-A double-spending attack occurs when a malicious actor spends the same cryptocurrency more than once before the network confirms the transaction, potentially leading to financial losses.
+A double-spending attack occurs when a malicious actor spends the same cryptocurrency more than once before the network confirms the transaction, potentially leading to financial losses. The attacker achieves this by:
 </p>
+<ol>
+    <li>Creating a public transaction to send coins to a victim</li>
+    <li>Simultaneously creating a private transaction sending the same coins to themselves</li>
+    <li>Mining a private blockchain faster than the honest network</li>
+    <li>Broadcasting the longer private chain, which reverses the public transaction</li>
+</ol>
 <p>
-This project simulates a double-spending attack on a blockchain system using Python. It aims to enhance understanding of blockchain security and potential mitigation strategies by demonstrating how an attacker can exploit vulnerabilities in a blockchain. 
-Through this simulation, students can analyze attack scenarios, measure their success rates, and explore countermeasures that can strengthen blockchain networks.
+This project simulates a double-spending attack on a blockchain system using Python, Flask, and SimPy. It demonstrates how an attacker with sufficient hash power (>51%) can exploit blockchain consensus mechanisms.
 </p>
 
-<h2>Functional Requirements (Prototype Phase)</h2>
+<h2>Functional Requirements (Implementation)</h2>
 <ol>
     <li>
         <strong>Blockchain Implementation:</strong>
         <ul>
-            <li>Develop a basic blockchain system in Python.</li>
-            <li>Implement fundamental features such as blocks, transactions, and proof-of-work (PoW) consensus.</li>
+            <li>Developed a complete blockchain system in Python</li>
+            <li>Implemented blocks, transactions, and proof-of-work (PoW) consensus</li>
+            <li>Transaction validation and balance tracking</li>
         </ul>
     </li>
     <li>
         <strong>Transaction Processing:</strong>
         <ul>
-            <li>Implement a transaction validation system.</li>
-            <li>Ensure transactions are broadcast and verified by network nodes.</li>
+            <li>Transaction validation system with all 6 nodes</li>
+            <li>Majority consensus requirement (4/6 nodes)</li>
+            <li>Transaction broadcasting and verification</li>
         </ul>
     </li>
     <li>
         <strong>Network Simulation:</strong>
         <ul>
-            <li>Create a peer-to-peer (P2P) network to simulate blockchain nodes.</li>
-            <li>Implement a communication protocol for transaction propagation.</li>
-            <li>Use the Simblock simulator for simulation.</li>
+            <li>Peer-to-peer (P2P) network with 6 nodes</li>
+            <li>Communication protocol for transaction propagation</li>
+            <li>SimPy-based discrete event simulation</li>
         </ul>
     </li>
     <li>
         <strong>Double-Spending Attack Simulation:</strong>
         <ul>
-            <li>Develop an attacker node capable of executing a double-spending attack.</li>
-            <li>Test attack success rates under different conditions (e.g., network delay, hash rate dominance).</li>
+            <li>Attacker node with private chain mining capability</li>
+            <li>Simultaneous public and private transactions</li>
+            <li>Success rate based on hash rate and network delay</li>
+            <li>CSV logging of all attack attempts with full block details</li>
+            <li>Detailed terminal output for attack visualization</li>
         </ul>
     </li>
 </ol>
 
-<h2>Network Nodes</h2>
-<table>
-    <tr>
-        <th>Node Name</th>
-        <th>Hash Rate</th>
-        <th>Balance</th>
-    </tr>
-    {% for node in nodes %}
-        <tr>
-            <td>{{ node.name }}</td>
-            <td>{{ node.hash_rate }}</td>
-            <td>{{ node.balance }}</td>
+<h2>Network Nodes (6 Total)</h2>
+<table border="1" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <thead>
+        <tr style="background-color: #f0f0f0; text-align: center;">
+            <th style="padding: 12px; font-weight: bold;">Node Name</th>
+            <th style="padding: 12px; font-weight: bold;">Hash Rate</th>
+            <th style="padding: 12px; font-weight: bold;">Current Balance</th>
         </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+        {% for node in nodes %}
+            <tr style="text-align: center;">
+                <td style="padding: 12px;"><strong>{{ node.name }}</strong></td>
+                <td style="padding: 12px;">{{ (node.hash_rate * 100)|round(1) }}%</td>
+                <td style="padding: 12px;">{{ node.balance }} coins</td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+<h2>How to Use This Simulator</h2>
+<div style="background-color: #f9f9f9; padding: 18px; margin-top: 20px; border-left: 5px solid #28a745; border-radius: 5px;">
+    <h3>1. Create Normal Transactions</h3>
+    <p>Go to <a href="{{ url_for('transactions') }}">Transactions</a> page to send coins between nodes.</p>
+    
+    <h3>2. View Blockchain</h3>
+    <p>Go to <a href="{{ url_for('blockchain') }}">Blockchain</a> page to see all blocks and transactions.</p>
+    
+    <h3>3. Execute Double-Spending Attack</h3>
+    <p>Go to <a href="{{ url_for('attack') }}">Attack</a> page to simulate a double-spending attack.</p>
+    <ul style="margin-left: 20px;">
+        <li>Select attacker and victim nodes</li>
+        <li>Set attack amount</li>
+        <li>Configure network delay (higher = easier attack)</li>
+        <li>Set attacker hash rate (>51% needed for high success probability)</li>
+    </ul>
+    
+    <h3>4. Check Logs</h3>
+    <p>
+        <strong>Terminal:</strong> Real-time logs showing transaction verification by all 6 nodes<br>
+        <strong>CSV File:</strong> <code>attack_logs.csv</code> contains complete attack records including:
+        <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>Full block details (previous hash, current hash, nonce, timestamp)</li>
+            <li>Complete transaction JSON</li>
+            <li>Hash rate (%) and network delay (s) in separate columns</li>
+            <li>Attack outcome and timestamp</li>
+        </ul>
+    </p>
+</div>
+
+<h2>Key Features</h2>
+<ul style="font-size: 1.1em; line-height: 1.8;">
+    <li>6-node peer-to-peer blockchain network</li>
+    <li>Transaction verification by all nodes with majority consensus</li>
+    <li>Proof-of-Work (PoW) mining simulation</li>
+    <li>Simultaneous public and private transaction creation</li>
+    <li>Private chain mining by attacker</li>
+    <li>Detailed terminal logging for transparency</li>
+    <li>CSV export of all attack attempts with full forensic data</li>
+    <li>Real-time balance tracking</li>
+    <li>Attack success probability based on hash rate and network delay</li>
+</ul>
+
+<hr style="margin: 40px 0; border: 1px solid #ddd;">
+
+<p style="text-align: center; color: #666; font-style: italic;">
+    <strong>Blockchain Security Research Simulator</strong> • 
+    Demonstrates real-world 51% attack mechanics • 
+    Educational tool for consensus vulnerabilities
+</p>
 {% endblock %}

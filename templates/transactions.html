@@ -3,14 +3,13 @@
 <h1>Transactions</h1>
 <p>This simulates a double-spending attack where any nodes can make Transactions to each other.</p>
 
-
 <h2>Create Transaction</h2>
 <form action="{{ url_for('create_transaction') }}" method="post">
     <p>
         <label>From:</label>
         <select name="sender" required>
             <option value="">Select sender...</option>
-            {% for node in ['Node1', 'Node2', 'Node3'] %}
+            {% for node in ['Node1', 'Node2', 'Node3', 'Node4', 'Node5', 'Node6'] %}
                 <option value="{{ node }}">{{ node }}</option>
             {% endfor %}
         </select>
@@ -19,7 +18,7 @@
         <label>To:</label>
         <select name="recipient" required>
             <option value="">Select recipient...</option>
-            {% for node in ['Node1', 'Node2', 'Node3'] %}
+            {% for node in ['Node1', 'Node2', 'Node3', 'Node4', 'Node5', 'Node6'] %}
                 <option value="{{ node }}">{{ node }}</option>
             {% endfor %}
         </select>
